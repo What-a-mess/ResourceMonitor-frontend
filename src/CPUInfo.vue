@@ -1,33 +1,35 @@
 <template>
-  <el-row>
-    <el-col :span="14" :offset="1">
-      <!-- <el-card class="cpuUsageCard">
-        <div ref="cpuTotalUsageChartRef" style="height: 100%; width: 100%;"></div>
-      </el-card> -->
-      <div>
-        <title-card title="CPU占用率" class="cpu-usage-card">
-          <div ref="cpuTotalUsageChartRef" class="cpu-usage-chart"></div>
+  <div>
+    <h1>CPU占用率</h1> <br/>
+    <el-row>
+      <el-col :span="15">
+        <!-- <el-card class="cpuUsageCard">
+          <div ref="cpuTotalUsageChartRef" style="height: 100%; width: 100%;"></div>
+        </el-card> -->
+        <div>
+          <title-card title="CPU占用率" class="cpu-usage-card">
+            <div ref="cpuTotalUsageChartRef" class="cpu-usage-chart"></div>
+          </title-card>
+        </div>
+      </el-col>
+      <el-col :span="8" :offset="1">
+        <title-card title="CPU基本信息">
+          <h4>CPU名称</h4>
+          <p>{{ store.cpuInfo.name }}</p>
+          <h4>CPU主频</h4>
+          <p>{{ baseFreqStr }}</p>
+          <h4>物理核心数</h4>
+          <p>{{ store.cpuInfo.physicalProcessorsCnt }}</p>
+          <h4>逻辑核心数</h4>
+          <p>{{ store.cpuInfo.logicalProcessorsCnt }}</p>
         </title-card>
-      </div>
-    </el-col>
-    <el-col :span="7" :offset="1">
-      <title-card title="CPU基本信息">
-        <h4>CPU名称</h4>
-        <p>{{ store.cpuInfo.name }}</p>
-        <h4>CPU主频</h4>
-        <p>{{ baseFreqStr }}</p>
-        <h4>物理核心数</h4>
-        <p>{{ store.cpuInfo.physicalProcessorsCnt }}</p>
-        <h4>逻辑核心数</h4>
-        <p>{{ store.cpuInfo.logicalProcessorsCnt }}</p>
-      </title-card>
-    </el-col>
-  </el-row>
+      </el-col>
+    </el-row>
+  </div>
 </template>
 
 <script>
 import { getCurrentInstance, onBeforeUnmount, onMounted, ref } from "vue";
-import CPUApi from "@/api/cpuapi.js";
 import TitleCard from '@/components/TitleCard.vue';
 import { computed } from "@vue/reactivity";
 import { store } from "@/utils/store"
@@ -38,15 +40,6 @@ export default {
   },
   setup() {
     const { proxy } = getCurrentInstance();
-    // const LEN = ref(60);
-    // let cpuUsage = [];
-    // let coreUsage = [[]];
-    // const cpuInfo = ref({
-    //   name: "temp",
-    //   baseFreq: 0,
-    //   logicalProcessorsCnt: 0,
-    //   physicalProcessorsCnt: 0
-    // });
     let timer = '';
 
     let baseFreqStr = computed(() => {
@@ -61,36 +54,6 @@ export default {
         return tempFreq + ' Hz';
       }
     });
-
-    // function fetchData() {
-    //   CPUApi.getCPUUsage().then(resp => {
-    //     cpuUsage.shift();
-    //     cpuUsage.push({ name: new Date().getTime(), value: resp.data });
-    //   }).catch(err => {
-    //     cpuUsage.shift();
-    //     cpuUsage.push(0);
-    //   });
-    //   CPUApi.getCoreUsage().then(resp => {
-    //     let tempCoreUsage = resp.data;
-    //     for (let [i, usage] of tempCoreUsage) {
-    //       coreUsage[i].shift(1);
-    //       coreUsage[i].push(usage);
-    //     }
-    //   }).catch(err => {
-    //     for (let i = 0; i < coreUsage.length; i++) {
-    //       coreUsage[i].shift(1);
-    //       coreUsage[i].push(0);
-    //     }
-    //   });
-    // }
-
-    // CPUApi.getCPUInfo().then(resp => {  
-    //   cpuInfo.value = resp.data;
-    // });
-    // cpuUsage = new Array(60).fill({ name: 0, value: 0 });
-    // for (let i = 0; i < cpuInfo.logicalProcessorsCnt; i++) {
-    //   coreUsage.push(new Array(60).fill(0));
-    // }
 
     const cpuTotalUsageChartRef = ref(null);
     const cpuTotalUsgChartOpt = {
@@ -114,7 +77,8 @@ export default {
           data: store.cpuUsage,
           type: 'line',
           showSymbol: false,
-          areaStyle: {}
+          areaStyle: {},
+          smooth: 0.15
         }
       ]
     };
@@ -139,7 +103,6 @@ export default {
 
     return {
       cpuTotalUsageChartRef,
-      // cpuInfo,
       baseFreqStr,
       store
     }

@@ -1,6 +1,6 @@
 <template>
   <el-container class="thecontainer">
-    <el-header class="header">Header</el-header>
+    <el-header id="header">Header</el-header>
     <el-container>
       <el-aside width="200px">
         <el-menu
@@ -17,6 +17,15 @@
               v-for="info, i in store.diskInfo" 
               :key="i"
               :index="'/disk/'+info.hashcode">{{ info.name }}</el-menu-item>
+          </el-sub-menu>
+          <el-sub-menu index="/if">
+            <template #title>
+              <span>网卡信息</span>
+            </template>
+            <el-menu-item
+              v-for="info, i in store.ifInfo" 
+              :key="i"
+              :index="'/if/'+info.hashcode">{{ info.name }}</el-menu-item>
           </el-sub-menu>
         </el-menu>
       </el-aside>
@@ -41,25 +50,40 @@ export default {
   thecontainer {
     height: 100%;
   }
-  #app, .el-container {
+  #app {
     margin: 0;
     padding: 0;
     height: 100%;
     width: 100%;
+    overflow-y: hidden;
   }
   #content {
-    margin: 0;
-    padding: 50px 5%;
-    height: 100%;
-    width: 100%;
+    position: absolute;
+    right: 0;
+    top: 0;
+    margin: 0 0;
+    left: 200px;
+    padding: 100px 5%;
+    bottom: 0;
+    overflow-y: scroll;
   }
-  .header {
+  #header {
     height: 75px;
     padding: auto;
-    background-color:tomato;
-    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.2);
-    border-radius: 1px;
+    background-color:rgba(255, 255, 255, 0);
+    backdrop-filter: blur(20px);
+    /* box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.2); */
+    border-bottom-style: solid;
+    border-bottom-width: 1px;
+    border-color: var(--el-border-color);
     z-index: 100;
     position: relative;
+  }
+  .side-bar {
+    display: block;
+    position: absolute;
+    left: 0;
+    top: 75px;
+    bottom: 0;
   }
 </style>

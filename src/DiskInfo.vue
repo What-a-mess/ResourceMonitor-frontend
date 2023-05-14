@@ -1,5 +1,6 @@
 <template>
   <div>
+    <h1>磁盘{{ diskInfo.get('name') }}</h1> <br/>
     <el-row>
       <el-col :span="18" :offset="3">
         <div>
@@ -23,7 +24,7 @@
 import { store } from '@/utils/store';
 import { getCurrentInstance, onBeforeUnmount, onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
-import TitleCard from '@/components/TitleCard.vue'
+import TitleCard from '@/components/TitleCard.vue';
 
 export default {
   components: {
@@ -31,17 +32,14 @@ export default {
   },
   setup() {
     const route = useRoute();
-    console.log(route.params.hashcode)
-    console.log(store.diskInfoMap.get(route.params.hashcode));
-    let diskInfo = ref(new Map([['usage', []], ['ioread', []], ['iowrite', []]]));
+    // console.log(route.params.hashcode)
+    // console.log(store.diskInfoMap.get(route.params.hashcode));
+    let diskInfo = ref(new Map());
     const diskUsageChartRef = ref(null);
     const diskIOChartRef = ref(null);
     const { proxy } = getCurrentInstance();
     let updateTimer = '';
     
-    // setInterval(() => {
-    //   diskInfo = store.diskInfoMap.get(363477131);
-    // }, 1000);
     const diskUsageChartOpt = {
       xAxis: {
         type: 'category',
@@ -66,7 +64,7 @@ export default {
           areaStyle: {}
         }
       ]
-    }
+    };
     const diskIOChartOpt = {
       legend: {},
       xAxis: {
@@ -104,7 +102,7 @@ export default {
           areaStyle: {}
         }
       ]
-    }
+    };
     onMounted(() => {
       const diskUsageChart = proxy.$echarts.init(diskUsageChartRef.value);
       diskUsageChart.setOption(diskUsageChartOpt);
@@ -119,8 +117,10 @@ export default {
         });
         diskIOChart.setOption({
           series: [{
+            name: 'ioread',
             data: diskInfo.value.get('ioread')
           }, {
+            name: 'iowrite',
             data: diskInfo.value.get('iowrite')
           }]
         })
