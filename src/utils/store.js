@@ -2,21 +2,20 @@ import { reactive } from "vue";
 import CPUApi from "@/api/cpuapi";
 import DiskApi from "@/api/diskapi"
 import IFApi from "@/api/ifapi";
+import FSApi from "@/api/fsapi";
 
 export const store = reactive({
   LEN: 60,
   cpuUsage: [],
   coreUsage: [],
-  cpuInfo: {
-    name: "temp",
-    baseFreq: 0,
-    logicalProcessorsCnt: 0,
-    physicalProcessorsCnt: 0
-  },
+  cpuInfo: {},
+  ifBasicInfo: {},
   diskInfo: [],
   diskInfoMap: new Map(),
   ifInfo:[],
   ifInfoMap: new Map(),
+  fsInfo:[],
+  fsInfoMap: new Map(),
   init() {
     console.log(this);
     CPUApi.getCPUInfo().then(resp => {  
@@ -55,6 +54,7 @@ export const store = reactive({
     DiskApi.getAllDiskStatus().then(resp => {
       this.diskInfo = resp.data;
     });
+    // 鉴于Disk是热插拔的，还是不用init()比较好
     for (let info of this.diskInfo) {
       if (!this.diskInfoMap.has(info.hashcode)) {
         this.diskInfoMap.set(info.hashcode, new Map());
@@ -89,6 +89,14 @@ export const store = reactive({
         this.ifInfoMap.get(info.hashcode)
           .set('displayName', info.displayName);
         this.ifInfoMap.get(info.hashcode)
+          .set('IPv4Addr', info.ipv4Addr);
+        this.ifInfoMap.get(info.hashcode)
+          .set('IPv6Addr', info.ipv6Addr);
+        this.ifInfoMap.get(info.hashcode)
+          .set('MACAddr', info.macaddr);
+        this.ifInfoMap.get(info.hashcode)
+          .set('speedRate', info.speedRate);
+        this.ifInfoMap.get(info.hashcode)
           .set('sendSpeed', new Array(this.LEN).fill({ name: 0, value: 0 }));
         this.ifInfoMap.get(info.hashcode)
           .set('recvSpeed', new Array(this.LEN).fill({ name: 0, value: 0 }));
@@ -107,9 +115,33 @@ export const store = reactive({
       this.ifInfoMap.get(info.hashcode).get('recvPktSpeed').push({ name: info.timestamp, value: info.recvPktSpeed });
     }
   },
+  fetchFSData() {
+    FSApi.getAllFSInfo().then(resp => {
+      this.fsInfo = resp.data;
+    });
+    for (let info of this.fsInfo) {
+      if (!this.fsInfoMap.has(info.hashcode)) {
+        this.fsInfoMap.set(info.hashcode, new Map());
+        this.fsInfoMap.get(info.hashcode)
+          .set('name', info.name);
+      }
+      
+      this.fsInfoMap.get(info.hashcode)
+        .set('type', info.type);
+      this.fsInfoMap.get(info.hashcode)
+        .set('freeSpace', info.freeSpace);
+      this.fsInfoMap.get(info.hashcode)
+        .set('totalSpace', info.totalSpace);
+      this.fsInfoMap.get(info.hashcode)
+        .set('usedSpace', info.usedSpace);
+      this.fsInfoMap.get(info.hashcode)
+        .set('spaceUsage', info.spaceUsage);
+    }
+  },
   fetchData() {
     this.fetchCpuData();
     this.fetchDiskData();
     this.fetchIFData();
+    this.fetchFSData();
   }
 });

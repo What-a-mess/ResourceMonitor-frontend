@@ -1,5 +1,6 @@
 <template>
   <div>
+    <h1>网卡 {{ ifInfo.get('displayName') }}</h1> <br/>
     <el-row>
       <el-col :span="15">
         <title-card :title="isTxSpd ? '传输速率' : '数据包数'" class="if-card">
@@ -9,7 +10,16 @@
       </el-col>
       <el-col :span="8" :offset="1">
         <title-card title="网卡信息">
-
+          <h4>网卡名称</h4>
+          <p>{{ ifInfo.get('displayName') }}</p>
+          <h4>IPv4地址</h4>
+          <p>{{ ifInfo.get('IPv4Addr') }}</p>
+          <h4>IPv6地址</h4>
+          <p>{{ ifInfo.get('IPv6Addr') }}</p>
+          <h4>MAC地址</h4>
+          <p>{{ ifInfo.get('MACAddr') }}</p>
+          <h4>连接速率</h4>
+          <p>{{ speedRate }}</p>
         </title-card>
       </el-col>
     </el-row>
@@ -24,6 +34,7 @@ import TitleCard from '@/components/TitleCard.vue';
 import { getCurrentInstance, onBeforeUnmount, onMounted, ref } from 'vue';
 import { store } from '@/utils/store'
 import { useRoute } from 'vue-router';
+import { computed } from '@vue/reactivity';
 
 export default {
   components: {
@@ -37,6 +48,17 @@ export default {
     let updateTimer = '';
     const { proxy } = getCurrentInstance();
     let cardTitle = "传输速率";
+    const speedRate = computed(() => {
+      let tempSpd = ifInfo.value.get('speedRate');
+      if (!Number.isFinite(tempSpd)) return '';
+      let suffix = ['bps', 'Kbps', 'Mbps', 'Gbps', 'Tbps'];
+      let i = 0;
+      while (tempSpd >= 1000) {
+        tempSpd /= 1000;
+        i++;
+      }
+      return tempSpd.toFixed(1) + ' ' + suffix[i];
+    })
 
     const ifTxSpeedChartOpt = {
       legend: {},
@@ -57,7 +79,7 @@ export default {
               i++;
             }
 
-            return (val.toFixed(1) + suffix[i]);
+            return (val.toFixed(1) + ' ' + suffix[i]);
           }
         }
       },
@@ -139,7 +161,8 @@ export default {
     return {
       isTxSpd,
       ifInfo,
-      ifTxSpeedChartRef
+      ifTxSpeedChartRef,
+      speedRate
     };
   }
 }

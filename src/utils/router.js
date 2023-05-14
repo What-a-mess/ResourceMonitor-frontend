@@ -4,6 +4,7 @@ import Home from '@/Home.vue';
 import CPUInfo from '@/CPUInfo.vue';
 import DiskInfo from '@/DiskInfo.vue';
 import IFInfo from '@/IFInfo.vue'
+import FSInfo from '@/FSInfo.vue'
 
 const routes = [
   {
@@ -18,6 +19,9 @@ const routes = [
   }, {
     path: '/if/:hashcode',
     component: IFInfo
+  }, {
+    path: '/fs',
+    component: FSInfo
   }
 ];
 
