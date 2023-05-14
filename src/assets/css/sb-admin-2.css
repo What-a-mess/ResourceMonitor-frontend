@@ -4483,7 +4483,8 @@
     background-color: #fff;
     background-clip: border-box;
     border: 1px solid #e3e6f0;
-    border-radius: 0.35rem;
+    border-radius: 2rem;
+    padding-bottom: 2rem;
   }
   
   .card > hr {
@@ -4511,7 +4512,7 @@
   .card-body {
     flex: 1 1 auto;
     min-height: 1px;
-    padding: 1.25rem;
+    padding: 0 2rem;
   }
   
   .card-title {
@@ -4536,7 +4537,7 @@
   }
   
   .card-header {
-    padding: 0.75rem 1.25rem;
+    padding: 0.75rem 2rem;
     margin-bottom: 0;
     background-color: rgba(0, 0, 0, 0);
   }
@@ -9555,7 +9556,7 @@
   }
   
   .font-weight-bold {
-    font-weight: 700 !important;
+    font-weight: 600 !important;
   }
   
   .font-weight-bolder {
