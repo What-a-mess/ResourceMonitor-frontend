@@ -5,11 +5,12 @@ import CPUInfo from '@/CPUInfo.vue';
 import DiskInfo from '@/DiskInfo.vue';
 import IFInfo from '@/IFInfo.vue'
 import FSInfo from '@/FSInfo.vue'
+import MemInfo from '@/MemInfo.vue'
 
 const routes = [
   {
     path: '/',
-    component: Home
+    component: CPUInfo
   }, {
     path: '/cpu',
     component: CPUInfo
@@ -22,6 +23,9 @@ const routes = [
   }, {
     path: '/fs',
     component: FSInfo
+  }, {
+    path: '/mem',
+    component: MemInfo
   }
 ];
 

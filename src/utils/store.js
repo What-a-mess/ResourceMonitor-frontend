@@ -3,12 +3,15 @@ import CPUApi from "@/api/cpuapi";
 import DiskApi from "@/api/diskapi"
 import IFApi from "@/api/ifapi";
 import FSApi from "@/api/fsapi";
+import MemApi from "@/api/memapi";
 
 export const store = reactive({
   LEN: 60,
   cpuUsage: [],
   coreUsage: [],
   cpuInfo: {},
+  totalMem: 0,
+  consumedMem: [],
   ifBasicInfo: {},
   diskInfo: [],
   diskInfoMap: new Map(),
@@ -22,9 +25,14 @@ export const store = reactive({
       this.cpuInfo = resp.data;
       this.cpuUsage = new Array(this.LEN).fill({ name: 0, value: 0 });
       for (let i = 0; i < this.cpuInfo.logicalProcessorsCnt; i++) {
-        this.coreUsage.push(new Array(this.LEN).fill(0));
+        this.coreUsage.push(new Array(this.LEN).fill({ name: 0, value: 0 }));
       }
     });
+    
+    this.consumedMem = new Array(this.LEN);
+    MemApi.getTotal().then(resp => {
+      this.totalMem = resp.data;
+    })
 
     this.fetchData();
   },
@@ -119,29 +127,18 @@ export const store = reactive({
     FSApi.getAllFSInfo().then(resp => {
       this.fsInfo = resp.data;
     });
-    for (let info of this.fsInfo) {
-      if (!this.fsInfoMap.has(info.hashcode)) {
-        this.fsInfoMap.set(info.hashcode, new Map());
-        this.fsInfoMap.get(info.hashcode)
-          .set('name', info.name);
-      }
-      
-      this.fsInfoMap.get(info.hashcode)
-        .set('type', info.type);
-      this.fsInfoMap.get(info.hashcode)
-        .set('freeSpace', info.freeSpace);
-      this.fsInfoMap.get(info.hashcode)
-        .set('totalSpace', info.totalSpace);
-      this.fsInfoMap.get(info.hashcode)
-        .set('usedSpace', info.usedSpace);
-      this.fsInfoMap.get(info.hashcode)
-        .set('spaceUsage', info.spaceUsage);
-    }
+  },
+  fetchMemData() {
+    MemApi.getConsumed().then(resp => {
+      this.consumedMem.shift();
+      this.consumedMem.push({ name: new Date().getTime(), value: resp.data });
+    });
   },
   fetchData() {
     this.fetchCpuData();
     this.fetchDiskData();
     this.fetchIFData();
     this.fetchFSData();
+    this.fetchMemData();
   }
 });

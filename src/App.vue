@@ -7,8 +7,10 @@
           default-active="2"
           :router="true"
         >
-          <el-menu-item index="/">Option 1</el-menu-item>
           <el-menu-item index="/cpu">CPU信息</el-menu-item>
+          <el-menu-item index="/mem">
+            <span>内存信息</span>
+          </el-menu-item>
           <el-sub-menu index="/disk">
             <template #title>
               <span>磁盘信息</span>
@@ -92,5 +94,15 @@ thecontainer {
   bottom: 0;
   min-width: 150px;
   width: 10%;
+  padding: 0;
+  margin: 0;
+  overflow-x: hidden;
+  min-height: calc(100hv);
+  border-right-style: solid;
+  border-right-color: var(--el-border-color);
+  border-right-width: 1px;
+}
+.el-menu {
+  border-style: hidden !important;
 }
 </style>
