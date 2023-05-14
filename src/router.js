@@ -1,11 +1,16 @@
 import {createRouter, createWebHistory, createWebHashHistory} from 'vue-router'
 
-import Home from './components/Home.vue'
+import Home from '@/components/Home.vue'
+import CPUInfo from '@/components/CPUInfo.vue'
 
 const routes = [
     {
-    path: '/home',
-    component: Home
+        path: '/',
+        component: Home
+    },
+    {
+        path: '/cpu',
+        component: CPUInfo 
     }
 ];
 
