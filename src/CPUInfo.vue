@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h1>CPU占用率</h1> <br/>
+    <h1>CPU信息</h1> <br/>
     <el-row>
       <el-col :span="15">
         <!-- <el-card class="cpuUsageCard">

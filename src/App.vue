@@ -1,6 +1,8 @@
 <template>
   <el-container class="thecontainer">
-    <el-header id="header">Header</el-header>
+    <el-header id="header">
+      <div style="text-align: left; padding-left: 1em;"><h1>资源监视器</h1></div>
+    </el-header>
     <el-container>
       <el-aside class="side-bar">
         <el-menu
@@ -38,16 +40,52 @@
       </el-aside>
       <div id="content"><router-view/></div>
     </el-container>
+    <a id="downloadAnchorElem" style="display:none"></a>
+    <el-button type="primary" :icon="Plus" circle class="save-button" />
+    <el-button type="primary" :icon="Download" circle class="dump-button" @click="dumpStorageJson" />
+    <el-button type="primary" :icon="Upload" circle class="upload-button" />
   </el-container>
 </template>
 
 <script>
 import { store } from '@/utils/store';
 
+import {
+  Download,
+  Upload,
+  Plus,
+} from '@element-plus/icons-vue'
+
 export default {
   setup() {
+    function dumpStorageJson(event) {
+      let dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(store));
+      let dlAnchorElem = document.getElementById('downloadAnchorElem');
+      dlAnchorElem.setAttribute("href", dataStr);
+      dlAnchorElem.setAttribute("download", "status.json");
+      dlAnchorElem.click();
+    }
+    function importData() {
+      let input = document.createElement('input');
+      input.type = 'file';
+      input.onchange = _ => {
+        // you can use this method to get file and perform respective operations
+                let files = Array.from(input.files);
+                console.log(files);
+                let reader = new FileReader();
+                reader.readAsText(files[0], "UTF-8");
+                reader.onload = (event) => {
+                  let fileString = event.target.result;
+                  let storageObj = JSON.parse(fileString)
+                }
+            };
+      input.click();
+      
+    }
     return {
-      store
+      store,
+      Download, Upload, Plus,
+      dumpStorageJson
     };
   }
 };
@@ -104,5 +142,32 @@ thecontainer {
 }
 .el-menu {
   border-style: hidden !important;
+}
+.save-button {
+  position: absolute;
+  right: 50px;
+  bottom: 30px;
+  height: 60px;
+  width: 60px;
+  font-size: x-large;
+  box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.4)
+}
+.dump-button {
+  position: absolute;
+  right: 50px;
+  bottom: 110px;
+  height: 60px;
+  width: 60px;
+  font-size: x-large;
+  box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.4)
+}
+.upload-button {
+  position: absolute;
+  right: 50px;
+  bottom: 190px;
+  height: 60px;
+  width: 60px;
+  font-size: x-large;
+  box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.4)
 }
 </style>
